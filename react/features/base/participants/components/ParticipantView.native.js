@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import { getParticipantById } from '../functions';
 import {
     MEDIA_TYPE,
     shouldRenderVideoTrack,
     VideoTrack
-} from '../../base/media';
-import { getParticipantById } from '../../base/participants';
-import { Container } from '../../base/react';
-import { getTrackByMediaTypeAndParticipant } from '../../base/tracks';
+} from '../../media';
+import { Container } from '../../react';
+import { getTrackByMediaTypeAndParticipant } from '../../tracks';
 
 import Avatar from './Avatar';
 import { styles } from './styles';
