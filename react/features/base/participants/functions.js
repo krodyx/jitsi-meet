@@ -55,21 +55,22 @@ function _getParticipants(participantsOrGetState) {
  * Returns the URL of the image for the avatar of a particular participant
  * identified by their id and/or e-mail address.
  *
- * @param {string} participantId - Participant's id.
  * @param {Object} [options] - The optional arguments.
+ * @param {string} [options.avatarId] - Participant's avatar id.
  * @param {string} [options.avatarUrl] - Participant's avatar url.
  * @param {string} [options.email] - Participant's email.
- * @param {string} [options.avatarId] - Participant's avatar id.
+ * @param {string} [options.participantId] - Participant's id.
  * @returns {string} The URL of the image for the avatar of the participant
  * identified by the specified participantId and/or email.
  *
  * @public
  */
-export function getAvatarURL(participantId, options = {}) {
+export function getAvatarURL(options = {}) {
     if (typeof config === 'object' && config.disableThirdPartyRequests) {
         return 'images/avatar2.png';
     }
-    const { avatarId, avatarUrl, email } = options;
+
+    const { avatarId, avatarUrl, email, participantId } = options;
 
     // The priority is url, email and lowest is avatarId
     if (avatarUrl) {
@@ -90,7 +91,11 @@ export function getAvatarURL(participantId, options = {}) {
     const random = !avatar || avatar.indexOf('@') < 0;
 
     if (!avatar) {
-        avatar = participantId;
+        if (participantId) {
+            avatar = participantId;
+        } else {
+            return undefined;
+        }
     }
 
     avatar = MD5.hexdigest(avatar.trim().toLowerCase());

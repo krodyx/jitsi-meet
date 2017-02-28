@@ -85,12 +85,14 @@ export default {
     getAvatarUrl: function (userId) {
         let user;
         if (!userId || APP.conference.isLocalId(userId)) {
-            user = users.local;
+            user = users.local || {};
             userId = APP.conference.getMyUserId();
         } else {
-            user = users[userId];
+            user = users[userId] || {};
         }
 
-        return getAvatarURL(userId, user);
+        user.participantId = userId;
+
+        return getAvatarURL(user);
     }
 };

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { getParticipantById } from '../functions';
+import { getAvatarURL, getParticipantById } from '../functions';
 import {
     MEDIA_TYPE,
     shouldRenderVideoTrack,
@@ -167,9 +167,15 @@ function _mapStateToProps(state, ownProps) {
         = getParticipantById(
             state['features/base/participants'],
             participantId);
+    const { avatarId, avatarUrl, email } = participant || {};
 
     return {
-        _avatar: participant ? participant.avatar : undefined,
+        _avatar: getAvatarURL({
+            avatarId,
+            avatarUrl,
+            email,
+            participantId
+        }),
         _videoTrack:
             getTrackByMediaTypeAndParticipant(
                 state['features/base/tracks'],

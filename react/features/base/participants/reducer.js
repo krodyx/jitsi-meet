@@ -1,4 +1,5 @@
 import { ReducerRegistry, setStateProperty } from '../redux';
+import { randomHexString } from '../util';
 
 import {
     DOMINANT_SPEAKER_CHANGED,
@@ -12,7 +13,6 @@ import {
     LOCAL_PARTICIPANT_DEFAULT_ID,
     PARTICIPANT_ROLE
 } from './constants';
-import { getAvatarURL } from './functions';
 
 /**
  * Participant object.
@@ -63,16 +63,10 @@ function _participant(state, action) {
     case PARTICIPANT_ID_CHANGED:
         if (state.id === action.oldValue) {
             const id = action.newValue;
-            const { avatarId, avatarUrl, email } = state;
 
             return {
                 ...state,
-                id,
-                avatar: state.avatar || getAvatarURL(id, {
-                    avatarId,
-                    avatarUrl,
-                    email
-                })
+                id
             };
         }
         break;
@@ -85,22 +79,21 @@ function _participant(state, action) {
         const id
             = participant.id
                 || (participant.local && LOCAL_PARTICIPANT_DEFAULT_ID);
-        const { avatarId, avatarUrl, email } = participant;
-        const avatar
-            = participant.avatar
-                || getAvatarURL(id, {
-                    avatarId,
-                    avatarUrl,
-                    email
-                });
 
         // TODO Get these names from config/localized.
         const name
             = participant.name || (participant.local ? 'me' : 'Fellow Jitster');
 
+        // TODO: this should get the avatarId from the localStorage for local
+        // participant.
+        const avatarId
+            = participant.avatarId
+                || (participant.local && randomHexString(32));
+
         return {
-            avatar,
-            email,
+            avatarId,
+            avatarUrl: participant.avatarUrl,
+            email: participant.email,
             id,
             local: participant.local || false,
             name,
@@ -120,16 +113,6 @@ function _participant(state, action) {
                             === -1) {
                     newState[key] = action.participant[key];
                 }
-            }
-
-            if (!newState.avatar) {
-                const { avatarId, avatarUrl, email } = newState;
-
-                newState.avatar = getAvatarURL(action.participant.id, {
-                    avatarId,
-                    avatarUrl,
-                    email
-                });
             }
 
             return newState;
